@@ -150,13 +150,7 @@ export function filterMultiSelectDef(
     )
     .filter((optionOrGroup) => optionOrGroup !== null) as DtNodeDef[];
   return def.multiSelect!.async || multiOptions.length
-    ? dtMultiSelectDef(
-        def.data,
-        def,
-        multiOptions,
-        def.multiSelect!.async,
-        def.multiSelect!.distinct,
-      )
+    ? dtMultiSelectDef(def.data, def, multiOptions, def.multiSelect!.async)
     : null;
 }
 
@@ -210,7 +204,7 @@ export function defUniquePredicate(
 ): boolean {
   return !(
     ((isDtFreeTextDef(def) && def.freeText.unique) ||
-      (isDtMultiSelectDef(def) && def.multiSelect?.distinct) ||
+      isDtMultiSelectDef(def) ||
       (isDtRangeDef(def) && def.range!.unique)) &&
     isDtOptionDef(def) &&
     def.option.uid &&

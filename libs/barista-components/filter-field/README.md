@@ -83,9 +83,10 @@ property, when replacing the datasource with the partially loaded data.
 
 ## Unique free-text, range or multiselect options
 
-It is possible to set a free-text, range or multiselect option to be unique. So
-it can only be added once regardless of the value the user added to the input
-field.
+It is possible to set a free-text or range option to be unique. So it can only
+be added once regardless of the value the user added to the input field.
+
+Multiselection is unique by default.
 
 <ba-live-example name="DtExampleFilterFieldUnique"></ba-live-example>
 
@@ -102,7 +103,7 @@ Every filter is an array of:
   unit (`string`) of the selected values and the range itself (which can either
   be one `number` value or a `number` tuple).
 - Multi select filters: array of objects that have been selected via an multi
-  selct list with checkboxes (the objects are exactly the ones the consumer has
+  select list with checkboxes (the objects are exactly the ones the consumer has
   provided via the data source). The suggested items can also be refined by
   typing.
 
@@ -197,7 +198,7 @@ node objects:
 
 ### Multi selection of filter values
 
-Multi select let's users choose more than one value for the same field. The
+Multi select lets users choose more than one value for the same field. The
 result is an array of the same objects the user has passed in the data source.
 
 <ba-live-example name="DtExampleFilterFieldMultiSelect"></ba-live-example>

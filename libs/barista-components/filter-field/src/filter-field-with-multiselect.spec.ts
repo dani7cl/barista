@@ -318,38 +318,6 @@ describe('DtFilterField', () => {
         expect(filterTags[0].value).toBe('Ketchup, Mustard');
       });
 
-      it('should select by keyboard', () => {
-        const tags = fixture.debugElement.queryAll(
-          By.css('.dt-filter-field-tag-label'),
-        );
-        tags[0].nativeElement.click();
-        advanceFilterfieldCycle();
-
-        // Expect the multiSelect filter to be open
-        let multiSelect = getMultiSelect(overlayContainerElement);
-        let input = getInput(fixture);
-        expect(multiSelect.length).toBe(1);
-
-        // Toggle second option
-        dispatchKeyboardEvent(input, 'keydown', DOWN_ARROW);
-        dispatchKeyboardEvent(input, 'keydown', DOWN_ARROW);
-        dispatchKeyboardEvent(input, 'keydown', DOWN_ARROW);
-        dispatchKeyboardEvent(input, 'keydown', SPACE);
-        dispatchKeyboardEvent(input, 'keydown', ENTER);
-        advanceFilterfieldCycle();
-
-        // Expect the multiSelect filter to be closed again
-        multiSelect = getMultiSelect(overlayContainerElement);
-        expect(multiSelect.length).toBe(0);
-
-        // Read the filters again and make expectations
-        const filterTags = getFilterTags(fixture);
-
-        expect(filterTags[0].key).toBe('Seasoning');
-        expect(filterTags[0].separator).toBe(':');
-        expect(filterTags[0].value).toBe('Ketchup, Mustard, Mayo');
-      });
-
       it('should make the edit to the first tag', () => {
         const tags = fixture.debugElement.queryAll(
           By.css('.dt-filter-field-tag-label'),

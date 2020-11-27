@@ -3,7 +3,7 @@
     class="dt-filter-field-multi-select-panel"
     role="listbox"
     [id]="id"
-    (submit)="handleSubmit($event)"
+    (submit)="_handleSubmit($event)"
   >
     <ng-container *ngFor="let optionOrGroupDef of _filteredOptionsOrGroups">
       <dt-optgroup
@@ -16,7 +16,7 @@
         >
           <dt-checkbox
             class="dt-filter-field-multi-select-checkbox"
-            (change)="_toggleOptionFromTemplate($event)"
+            (change)="_toggleOptionFromTemplate(optionDef)"
             [checked]="_isOptionSelected(optionDef)"
             [value]="optionDef"
           >
@@ -30,7 +30,7 @@
         <dt-option [value]="optionOrGroupDef">
           <dt-checkbox
             class="dt-filter-field-multi-select-checkbox"
-            (change)="_toggleOptionFromTemplate($event)"
+            (change)="_toggleOptionFromTemplate(optionOrGroupDef)"
             [checked]="_isOptionSelected(optionOrGroupDef)"
             [value]="optionOrGroupDef"
           >

@@ -289,6 +289,14 @@ export function getRangeApplyButton(
   );
 }
 
+export function getMultiSelectTrigger(
+  overlayContainerElement: HTMLElement,
+): HTMLElement[] {
+  return Array.from(
+    overlayContainerElement.querySelectorAll('input[dtFilterFieldMultiSelect]'),
+  );
+}
+
 export function getMultiSelect(
   overlayContainerElement: HTMLElement,
 ): HTMLElement[] {

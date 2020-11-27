@@ -16,6 +16,7 @@
 
 import { ActiveDescendantKeyManager, Highlightable } from '@angular/cdk/a11y';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { SelectionModel } from '@angular/cdk/collections';
 import { TemplatePortal } from '@angular/cdk/portal';
 // tslint:disable: template-cyclomatic-complexity
 import {
@@ -25,8 +26,6 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Inject,
-  InjectionToken,
   Input,
   NgZone,
   Output,
@@ -37,11 +36,11 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { DtCheckboxChange } from '@dynatrace/barista-components/checkbox';
 import { DtOption } from '@dynatrace/barista-components/core';
 import { xor } from 'lodash-es';
 import { merge, Subject } from 'rxjs';
 import { startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { DtFilterFieldElement } from '../shared/filter-field-element';
 import { DtNodeDef, isDtGroupDef } from '../types';
 
 let _uniqueIdCounter = 0;
@@ -55,25 +54,6 @@ export class DtFilterFieldMultiSelectSubmittedEvent<T> {
   ) {}
 }
 
-/** Default `dt-multi-select` options that can be overridden. */
-export interface DtMultiSelectDefaultOptions {
-  /** Whether the first option should be highlighted when an multi-select panel is opened. */
-  autoActiveFirstOption?: boolean;
-}
-
-/** Injection token to be used to override the default options for `dt-multi-select`. */
-export const DT_MULTI_SELECT_DEFAULT_OPTIONS = new InjectionToken<
-  DtMultiSelectDefaultOptions
->('dt-multi-select-default-options', {
-  providedIn: 'root',
-  factory: DT_MULTI_SELECT_DEFAULT_OPTIONS_FACTORY,
-});
-
-/** @docs-private */
-export function DT_MULTI_SELECT_DEFAULT_OPTIONS_FACTORY(): DtMultiSelectDefaultOptions {
-  return { autoActiveFirstOption: true };
-}
-
 @Component({
   selector: 'dt-filter-field-multi-select',
   templateUrl: 'filter-field-multi-select.html',
@@ -83,7 +63,8 @@ export function DT_MULTI_SELECT_DEFAULT_OPTIONS_FACTORY(): DtMultiSelectDefaultO
   preserveWhitespaces: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DtFilterFieldMultiSelect<T> implements AfterViewInit {
+export class DtFilterFieldMultiSelect<T>
+  implements DtFilterFieldElement<T>, AfterViewInit {
   /**
    * Whether the first option should be highlighted when the multi-select panel is opened.
    * Can be configured globally through the `DT_MULTI_SELECT_DEFAULT_OPTIONS` token.
@@ -173,10 +154,10 @@ export class DtFilterFieldMultiSelect<T> implements AfterViewInit {
   _portal: TemplatePortal;
 
   /** @internal Holds the current values of the input field for the from value */
-  _currentSelection: T[] = [];
+  _initialSelection: T[] = [];
 
   /** @internal Holds the current values of the input field for the from value */
-  _initialSelection: T[] = [];
+  _currentSelection: SelectionModel<T> = new SelectionModel<T>(true, []);
 
   /** @internal Holds the current values of the input field for the from value */
   _applyDisabled: boolean;
@@ -187,12 +168,8 @@ export class DtFilterFieldMultiSelect<T> implements AfterViewInit {
   constructor(
     private _viewContainerRef: ViewContainerRef,
     private _changeDetectorRef: ChangeDetectorRef,
-    @Inject(DT_MULTI_SELECT_DEFAULT_OPTIONS)
-    defaults: DtMultiSelectDefaultOptions,
-    private _ngZone?: NgZone,
-  ) {
-    this._autoActiveFirstOption = !!defaults.autoActiveFirstOption;
-  }
+    private _ngZone: NgZone,
+  ) {}
 
   ngAfterViewInit(): void {
     this._portal = new TemplatePortal<{}>(
@@ -250,7 +227,7 @@ export class DtFilterFieldMultiSelect<T> implements AfterViewInit {
   }
 
   /**  Handles the submit of multiSelect values. */
-  handleSubmit(event: Event): void {
+  _handleSubmit(event: Event): void {
     event.preventDefault();
     event.stopImmediatePropagation();
 
@@ -263,60 +240,61 @@ export class DtFilterFieldMultiSelect<T> implements AfterViewInit {
    */
   _emitSelectEvent(): void {
     this.multiSelectSubmitted.emit(
-      new DtFilterFieldMultiSelectSubmittedEvent(this, this._currentSelection),
+      new DtFilterFieldMultiSelectSubmittedEvent(
+        this,
+        this._currentSelection.selected,
+      ),
     );
     // After emission we need to reset the multiSelect state, to have a fresh one
     // if another multiSelect opens.
-    this._currentSelection = [];
+    this._currentSelection.clear();
   }
 
   /** @internal Set pre selected options for the multiSelect input fields. */
   _setInitialSelection(values: T[]): void {
     if (Array.isArray(values)) {
       this._initialSelection = values;
-      this._currentSelection = values.slice();
+      for (const value of values) {
+        this._currentSelection.select(value);
+      }
     } else {
       this._initialSelection = [];
+      this._currentSelection.clear();
     }
     this._checkApplyDisable();
   }
 
   /** Toggle option */
-  toggleOption(option: Highlightable & DtOption<T>): void {
-    this._currentSelection.includes(option.value)
-      ? (this._currentSelection = this._currentSelection.filter(
-          (opt) => opt != option.value,
-        ))
-      : this._currentSelection.push(option.value);
+  _toggleOption(option: Highlightable & DtOption<T>): void {
+    this._currentSelection.toggle(option.value);
     this._checkApplyDisable();
   }
 
   /** @internal Toggle option from template */
-  _toggleOptionFromTemplate(event: DtCheckboxChange<T>): void {
-    if (event.checked) this._currentSelection.push(event.source.value);
-    else
-      this._currentSelection = this._currentSelection.filter(
-        (opt) => opt !== event.source.value,
-      );
+  _toggleOptionFromTemplate(option: T): void {
+    this._currentSelection.toggle(option);
     this._checkApplyDisable();
   }
 
   /** Check if option is selected */
   _isOptionSelected(option: T): boolean {
-    return !!this._currentSelection.find((opt) => opt === option);
+    return this._currentSelection.isSelected(option);
   }
 
   private _checkApplyDisable(): void {
     this._applyDisabled =
-      this._currentSelection.length === 0 ||
-      xor(this._currentSelection, this._initialSelection).length === 0;
+      this._currentSelection.selected.length === 0 ||
+      xor(this._currentSelection.selected, this._initialSelection).length === 0;
   }
 
   private _filterOptions(): void {
     if (this.inputValue.trim().length > 0) {
       this._filteredOptionsOrGroups = this.optionsOrGroups
         .map((optOrGroup) =>
-          isDtGroupDef(optOrGroup)
+          // filter options inside groups
+          // if group label matches search it should all be included
+          isDtGroupDef(optOrGroup) &&
+          !optOrGroup.group.label.toLowerCase().includes(this._inputValue)
             ? {
                 ...optOrGroup,
                 group: {
@@ -331,6 +309,7 @@ export class DtFilterFieldMultiSelect<T> implements AfterViewInit {
             : optOrGroup,
         )
         .filter((optOrGroup) =>
+          // filter non grouped options
           isDtGroupDef(optOrGroup)
             ? optOrGroup.group?.options?.length
             : optOrGroup.option?.viewValue
@@ -340,5 +319,9 @@ export class DtFilterFieldMultiSelect<T> implements AfterViewInit {
     } else {
       this._filteredOptionsOrGroups = this.optionsOrGroups;
     }
+  }
+
+  focus(): void {
+    this._keyManager.setActiveItem(this._options.first);
   }
 }

@@ -514,7 +514,7 @@ export class DtFilterField<T = any>
             }
           } else if (isDtRangeDef(this._currentDef)) {
             this._filterfieldRangeTrigger.openPanel();
-            this._filterfieldRangeTrigger.range.focus();
+            this._filterfieldRangeTrigger.element.focus();
             // need to return here, otherwise the focus would jump back into the filter field
             return;
           } else if (isDtMultiSelectDef(this._currentDef)) {
@@ -677,8 +677,6 @@ export class DtFilterField<T = any>
 
   /** @internal */
   _handleInputKeyDown(event: KeyboardEvent): void {
-    console.log('filter-field', this._loading);
-
     if (this._loading) {
       return;
     }
@@ -1062,11 +1060,11 @@ export class DtFilterField<T = any>
   _handleMultiSelectSubmitted(
     event: DtFilterFieldMultiSelectSubmittedEvent<T>,
   ): void {
-    event.multiSelect.forEach(
-      (option: T & DtNodeDef<DtOptionDef> & { option: DtOptionDef }) => {
-        return this._peekCurrentFilterValues().push(option);
-      },
-    );
+    for (let option of event.multiSelect) {
+      this._peekCurrentFilterValues().push(
+        option as T & DtNodeDef<DtOptionDef> & { option: DtOptionDef },
+      );
+    }
 
     this._multiSelectTrigger.closePanel(false);
     // this._isFocused = true;

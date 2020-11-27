@@ -727,7 +727,6 @@ describe('DtFilterField Util', () => {
         multiSelectOptionDef,
         [optionDef],
         false,
-        false,
       );
       optionDef.option!.parentAutocomplete = multiSelectDef;
       optionDef.option!.parentGroup = multiSelectDef;
@@ -778,7 +777,6 @@ describe('DtFilterField Util', () => {
         null,
         multiSelectOptionDef,
         [option1Def, option2Def],
-        false,
         false,
       );
       option1Def.option!.parentAutocomplete = multiSelectDef;
@@ -1230,7 +1228,6 @@ describe('DtFilterField Util', () => {
         optionDef,
         [],
         true,
-        true,
       );
       expect(defUniquePredicate(multiSelectDef, selectedIds)).toBe(false);
     });
@@ -1283,7 +1280,7 @@ describe('DtFilterField Util', () => {
       expect(defUniquePredicate(rangeDef, selectedIds)).toBe(true);
     });
 
-    it('should return true if the multiSelect is not unique but already in the selectedIds', () => {
+    it('should return false if multiSelect', () => {
       const optionSource = { name: 'Option 1', uid: '1' };
       const selectedIds = new Set([optionSource.uid]);
       const optionDef = dtOptionDef(
@@ -1299,9 +1296,8 @@ describe('DtFilterField Util', () => {
         optionDef,
         [],
         true,
-        false,
       );
-      expect(defUniquePredicate(multiSelectDef, selectedIds)).toBe(true);
+      expect(defUniquePredicate(multiSelectDef, selectedIds)).toBe(false);
     });
   });
 

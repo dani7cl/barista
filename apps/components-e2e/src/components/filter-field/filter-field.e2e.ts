@@ -17,24 +17,24 @@
 // tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
 // tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
 
-import { Selector } from 'testcafe';
-import { resetWindowSizeToDefault, waitForAngular } from '../../utils';
 import {
-  clearAll,
   clickOption,
+  errorBox,
+  input,
+  clearAll,
   filterTags,
   focusFilterFieldInput,
   getFilterfieldTags,
+  tagOverlay,
+  setupSecondTestScenario,
+  filterFieldRangePanel,
+  clickMultiSelectOption,
   multiSelectApply,
   multiSelectPanel,
-  setupSecondTestScenario,
   switchToSecondDatasource,
-  clickMultiSelectOption,
-  input,
-  errorBox,
-  tagOverlay,
-  filterFieldRangePanel,
 } from './filter-field.po';
+import { Selector } from 'testcafe';
+import { resetWindowSizeToDefault, waitForAngular } from '../../utils';
 
 fixture('Filter Field')
   .page('http://localhost:4200/filter-field')

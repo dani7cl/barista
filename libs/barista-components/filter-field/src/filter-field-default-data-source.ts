@@ -76,7 +76,6 @@ export interface DtFilterFieldDefaultDataSourceMultiSelect {
   >;
   async?: boolean;
   partial?: boolean;
-  unique?: boolean;
 }
 
 /** Shape of an object to be usable as a free text variant */
@@ -274,7 +273,7 @@ export class DtFilterFieldDefaultDataSource
   transformMultiSelect(
     data: DtFilterFieldDefaultDataSourceMultiSelect,
   ): DtNodeDef<DtFilterFieldDefaultDataSourceMultiSelect> {
-    const def = dtMultiSelectDef(data, null, [], !!data.async, !!data.unique);
+    const def = dtMultiSelectDef(data, null, [], !!data.async);
     def.multiSelect!.multiOptions = this.transformList(data.multiOptions, def);
     return def;
   }

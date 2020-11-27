@@ -65,7 +65,6 @@ export interface DtMultiSelectDef<MOpt = unknown, Opr = unknown> {
   async: boolean;
   multiOptions: DtNodeDef<MOpt>[];
   operators: DtNodeDef<Opr>[];
-  distinct: boolean;
 }
 
 export interface DtGroupDef<O = unknown> {
@@ -168,11 +167,10 @@ export function dtMultiSelectDef<D = unknown, OG = unknown, Op = unknown>(
   existingNodeDef: DtNodeDef | null,
   multiOptions: DtNodeDef<OG>[],
   async: boolean,
-  distinct: boolean,
 ): DtNodeDef<D> & { multiSelect: DtMultiSelectDef<OG, Op> } {
   const def = {
     ...nodeDef(data, existingNodeDef),
-    multiSelect: { multiOptions, async, distinct, operators: [] },
+    multiSelect: { multiOptions, async, operators: [] },
   };
   def.nodeFlags |= DtNodeFlags.TypeMultiSelect;
   return def;
@@ -190,11 +188,7 @@ export function isAsyncDtMultiSelectDef<D>(
   multiSelect: DtMultiSelectDef;
   option: DtOptionDef;
 } {
-  return !!(
-    isDtMultiSelectDef<D>(def) &&
-    isDtOptionDef<D>(def) &&
-    def.multiSelect?.distinct
-  );
+  return !!(isDtMultiSelectDef<D>(def) && isDtOptionDef<D>(def));
 }
 
 /** Creates a new DtAutocompleteDef onto a provided existing NodeDef or a newly created one. */
