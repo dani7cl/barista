@@ -17,7 +17,7 @@
 // tslint:disable no-lifecycle-call no-use-before-declare no-magic-numbers
 // tslint:disable no-any max-file-line-count no-unbound-method use-component-selector
 
-import { DOWN_ARROW, ENTER, ESCAPE, SPACE } from '@angular/cdk/keycodes';
+import { ESCAPE } from '@angular/cdk/keycodes';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ComponentFixture, inject } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -37,7 +37,6 @@ import {
 import {
   getFilterFieldRange,
   getFilterTags,
-  getInput,
   getMultiSelect,
   getMultiselectApplyButton,
   getMultiselectCheckboxInputs,
