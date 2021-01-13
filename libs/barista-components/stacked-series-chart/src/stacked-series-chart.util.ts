@@ -102,6 +102,9 @@ export type DtStackedSeriesChartMode = 'bar' | 'column';
 /** Whether a single node is selectable or the whole row/column */
 export type DtStackedSeriesChartSelectionMode = 'node' | 'stack';
 
+/** Mode of the label axis, auto could be added here in the future */
+export type DtStackedSeriesChartLabelAxisMode = 'full' | 'compact';
+
 /** Selection events object */
 export type DtStackedSeriesChartSelection = [
   DtStackedSeriesChartSeries,

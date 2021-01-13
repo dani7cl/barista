@@ -54,6 +54,7 @@ import {
   getSeriesWithState,
   getTotalMaxValue,
   updateNodesVisibility,
+  DtStackedSeriesChartLabelAxisMode,
 } from './stacked-series-chart.util';
 import { DtOverlayRef, DtOverlay } from '@dynatrace/barista-components/overlay';
 
@@ -211,6 +212,13 @@ export class DtStackedSeriesChart implements OnDestroy {
     absolute: 0,
     relative: 0,
   };
+
+  // Whether to show the label axis rotated to fit more labels
+  @Input() labelAxisMode: DtStackedSeriesChartLabelAxisMode = 'full';
+  /** @internal  Support only for mode === 'column', wouldn't make sense for 'row' */
+  get _labelAxisCompactModeEnabled(): boolean {
+    return this.labelAxisMode === 'compact' && this.mode === 'column';
+  }
 
   /** Current selection [series, node] */
   @Input()

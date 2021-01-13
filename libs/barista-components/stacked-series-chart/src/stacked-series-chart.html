@@ -25,9 +25,14 @@
     <span
       *ngIf="visibleLabel"
       class="dt-stacked-series-chart-track-label"
+      [class.dt-stacked-series-chart-track-label-compact-mode]="
+        _labelAxisCompactModeEnabled
+      "
       [style]="_sanitizeCSS([['--dt-stacked-series-chart-track-index', i + 1]])"
     >
-      {{ track.origin.label }}
+      <span class="dt-stacked-series-chart-track-label-content">
+        {{ track.origin.label }}
+      </span>
     </span>
 
     <div
@@ -74,16 +79,21 @@
           ['--dt-stacked-series-chart-tick-position', tick.pos + '%']
         ])
       "
-      >{{
+    >
+      {{
         valueDisplayMode === 'percent'
           ? (tick.valueRelative * 100 | dtPercent)
           : (tick.value | dtCount)
-      }}</span
-    >
+      }}
+    </span>
   </div>
 </div>
 
-<dt-legend class="dt-stacked-series-chart-legend" *ngIf="visibleLegend">
+<dt-legend
+  class="dt-stacked-series-chart-legend"
+  [class.dt-stacked-series-legend-compact-mode]="_labelAxisCompactModeEnabled"
+  *ngIf="visibleLegend"
+>
   <dt-legend-item
     *ngFor="let legend of _legends; let i = index"
     [class.dt-stacked-series-chart-legend-item-hidden]="!legend.visible"

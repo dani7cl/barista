@@ -42,6 +42,7 @@ import {
   DtStackedSeriesChartSeries,
   DtStackedSeriesChartValueDisplayMode,
   DtStackedSeriesChartSelectionMode,
+  DtStackedSeriesChartLabelAxisMode,
 } from './stacked-series-chart.util';
 
 describe('DtStackedSeriesChart', () => {
@@ -111,6 +112,13 @@ describe('DtStackedSeriesChart', () => {
   function getAllTrackLabels(): DebugElement[] {
     return fixture.debugElement.queryAll(
       By.css('.dt-stacked-series-chart-track-label'),
+    );
+  }
+
+  /** Get all track labels content */
+  function getAllTrackLabelsCompacted(): DebugElement[] {
+    return fixture.debugElement.queryAll(
+      By.css('.dt-stacked-series-chart-track-label-compact-mode'),
     );
   }
 
@@ -596,6 +604,16 @@ describe('DtStackedSeriesChart', () => {
         const axis = getSeriesAxis();
         expect(axis).toBeTruthy();
       });
+
+      it('should compact the labels', () => {
+        rootComponent.labelAxisMode = 'compact';
+        fixture.detectChanges();
+
+        const compactedLabels = getAllTrackLabelsCompacted();
+        const allLabels = getAllTrackLabels();
+
+        expect(allLabels.length).toEqual(compactedLabels.length);
+      });
     });
   });
 
@@ -641,6 +659,7 @@ describe('DtStackedSeriesChart', () => {
       [visibleLegend]="visibleLegend"
       [visibleTrackBackground]="visibleTrackBackground"
       [visibleLabel]="visibleLabel"
+      [labelAxisMode]="labelAxisMode"
       [visibleValueAxis]="visibleValueAxis"
       [mode]="mode"
       [maxTrackSize]="maxTrackSize"
@@ -665,6 +684,7 @@ class TestApp {
   visibleLegend: boolean = true;
   visibleTrackBackground: boolean = true;
   visibleLabel: boolean = true;
+  labelAxisMode: DtStackedSeriesChartLabelAxisMode = 'full';
   visibleValueAxis: boolean = true;
   mode: DtStackedSeriesChartMode;
   maxTrackSize: number;

@@ -55,6 +55,7 @@ follow the same order given by the developer
 | `visibleTrackBackground` | `boolean`                                                 | true       | Whether background should be transparent or show a background.                                                                                                                                                        |
 | `visibleLabel`           | `boolean`                                                 | true       | Visibility of series label.                                                                                                                                                                                           |
 | `visibleValueAxis`       | `boolean`                                                 | true       | Visibility of value axis.                                                                                                                                                                                             |
+| `labelAxisMode`          | `DtStackedSeriesChartLabelAxisMode`                       | `full`     | Mode of the label axis, compact would make space for more labels                                                                                                                                                      |
 | `maxTrackSize`           | `number`                                                  | 16         | Maximum size of the track.                                                                                                                                                                                            |
 
 #### Outputs
@@ -105,6 +106,16 @@ a percentage of the total or not show it.
 | `none`     | Do not display the value in legend                    |
 | `absolute` | Display the value present in DtStackedSeriesChartNode |
 | `percent`  | Display the percentage of the node within that series |
+
+### DtStackedSeriesChartLabelAxisMode
+
+For the `column` mode, it might be interesting to show the labels rotated in
+order that more labels fit in the chart and there is less overlap between them.
+
+| Value     | Description                               |
+| --------- | ----------------------------------------- |
+| `full`    | Labels paralel to the axis                |
+| `compact` | Labels rotated 45º to make space for more |
 
 ### DtStackedSeriesChartSeries
 
